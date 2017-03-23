@@ -949,6 +949,13 @@ describe('Model', () => {
     it('returns the property of the passed in key', () => {
       model.get('name').should.eql('Test name');
     });
+
+    it('returns non-primitive attributes by value', () => {
+      model.set('foo', { bar: true });
+      const foo = model.get('foo');
+      foo.bar = false;
+      expect(model.get('foo')).to.eql({ bar: true });
+    });
   });
 
   describe('set', () => {
