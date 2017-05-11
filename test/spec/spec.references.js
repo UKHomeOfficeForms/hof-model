@@ -45,4 +45,25 @@ describe('Referenced Fields', () => {
     listener.should.have.been.calledWith('new value', 'original value');
   });
 
+  it('unreferencing a field emits a change event even if the raw value is unchanged', () => {
+    const listener1 = sinon.stub();
+    const listener2 = sinon.stub();
+    model.on('change:reffed', listener1);
+    model.on('change', listener2);
+    model.set('reffed', 'original value');
+    listener1.should.have.been.calledWith('original value');
+    listener2.should.have.been.calledWith({ reffed: 'original value' });
+  });
+
+  it('unreferencing a field no longer emits change events on changes to the referenced field', () => {
+    const listener = sinon.stub();
+    model.on('change:reffed', listener);
+    model.set('parent', 'new value 1');
+    listener.should.have.been.calledOnce;
+    model.set('reffed', 'unref');
+    listener.should.have.been.calledTwice;
+    model.set('parent', 'new value 2');
+    listener.should.have.been.calledTwice;
+  });
+
 });
