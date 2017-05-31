@@ -1190,6 +1190,12 @@ describe('Model', () => {
       model.url({ url: 'http://example.com/' }).should.equal('http://example.com/');
     });
 
+    it('returns this.options.url as the fallback', () => {
+      (new Model({}, {
+        url: 'http://instance.example.com/'
+      })).url().should.equal('http://instance.example.com/');
+    });
+
     it('extends url passed with options', () => {
       var output = model.url({
         url: 'http://example.com',
@@ -1211,9 +1217,7 @@ describe('Model', () => {
 
   });
 
-
   describe('parseError', () => {
-
 
     it('returns data passed extednded with the status code', () => {
       model.parseError(500, { data: 1 }).should.eql({ status: 500, data: 1 });
