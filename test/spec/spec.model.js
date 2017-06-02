@@ -362,6 +362,21 @@ describe('Model', () => {
       }, done));
     });
 
+    it('allows optional headers', done => {
+      var endPoint = url.parse('http://proxy-example.com:1234');
+      var options = {
+        headers: {
+          'User-Agent': 'Example'
+        }
+      };
+      model.url = sinon.stub().returns(endPoint);
+      model._request.yieldsAsync(success);
+      model.save(options, sandbox(() => {
+        model._request.args[0][0].headers['Content-Type'].should.equal('application/json');
+        model._request.args[0][0].headers['User-Agent'].should.equal('Example');
+      }, done));
+    });
+
     it('allows custom headers', done => {
       var endPoint = url.parse('http://proxy-example.com:1234');
       endPoint.headers = {
@@ -369,10 +384,25 @@ describe('Model', () => {
       };
       model.url = sinon.stub().returns(endPoint);
       model._request.yieldsAsync(success);
-
       model.save(sandbox(() => {
         model._request.args[0][0].headers['Content-Type'].should.equal('application/json');
         model._request.args[0][0].headers.Host.should.equal('example.com');
+      }, done));
+    });
+
+    it('allows optional headers on the instance', done => {
+      var endPoint = url.parse('http://proxy-example.com:1234');
+      var options = {
+        headers: {
+          'User-Agent': 'Example'
+        }
+      };
+      var instance = new Model({}, options);
+      instance.url = sinon.stub().returns(endPoint);
+      instance._request = sinon.stub().yieldsAsync(success);
+      instance.save(sandbox(() => {
+        instance._request.args[0][0].headers['Content-Type'].should.equal('application/json');
+        instance._request.args[0][0].headers['User-Agent'].should.equal('Example');
       }, done));
     });
 
@@ -566,6 +596,20 @@ describe('Model', () => {
       }, done));
     });
 
+    it('allows optional headers', done => {
+      var endPoint = url.parse('http://proxy-example.com:1234');
+      var options = {
+        headers: {
+          'User-Agent': 'Example'
+        }
+      };
+      model.url = sinon.stub().returns(endPoint);
+      model._request.yieldsAsync(success);
+      model.fetch(options, sandbox(() => {
+        model._request.args[0][0].headers['User-Agent'].should.equal('Example');
+      }, done));
+    });
+
     it('allows custom headers', done => {
       var endPoint = url.parse('http://proxy-example.com:1234');
       endPoint.headers = {
@@ -575,6 +619,21 @@ describe('Model', () => {
       model._request.yieldsAsync(success);
       model.fetch(sandbox(() => {
         model._request.args[0][0].headers.Host.should.equal('example.com');
+      }, done));
+    });
+
+    it('allows optional headers on the instance', done => {
+      var endPoint = url.parse('http://proxy-example.com:1234');
+      var options = {
+        headers: {
+          'User-Agent': 'Example'
+        }
+      };
+      var instance = new Model({}, options);
+      instance.url = sinon.stub().returns(endPoint);
+      instance._request = sinon.stub().yieldsAsync(success);
+      instance.fetch(sandbox(() => {
+        instance._request.args[0][0].headers['User-Agent'].should.equal('Example');
       }, done));
     });
 
@@ -789,6 +848,20 @@ describe('Model', () => {
       }, done));
     });
 
+    it('allows optional headers', done => {
+      var endPoint = url.parse('http://proxy-example.com:1234');
+      var options = {
+        headers: {
+          'User-Agent': 'Example'
+        }
+      };
+      model.url = sinon.stub().returns(endPoint);
+      model._request.yieldsAsync(success);
+      model.delete(options, sandbox(() => {
+        model._request.args[0][0].headers['User-Agent'].should.equal('Example');
+      }, done));
+    });
+
     it('allows custom headers', done => {
       var endPoint = url.parse('http://proxy-example.com:1234');
       endPoint.headers = {
@@ -798,6 +871,21 @@ describe('Model', () => {
       model._request.yieldsAsync(success);
       model.delete(sandbox(() => {
         model._request.args[0][0].headers.Host.should.equal('example.com');
+      }, done));
+    });
+
+    it('allows optional headers on the instance', done => {
+      var endPoint = url.parse('http://proxy-example.com:1234');
+      var options = {
+        headers: {
+          'User-Agent': 'Example'
+        }
+      };
+      var instance = new Model({}, options);
+      instance.url = sinon.stub().returns(endPoint);
+      instance._request = sinon.stub().yieldsAsync(success);
+      instance.delete(sandbox(() => {
+        instance._request.args[0][0].headers['User-Agent'].should.equal('Example');
       }, done));
     });
 
