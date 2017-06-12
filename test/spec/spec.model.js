@@ -38,11 +38,13 @@ describe('Model', () => {
     };
     fail = {
       statusCode: 500,
-      body: '{ "message": "error" }'
+      body: '{ "message": "error" }',
+      headers: { error: 'fail' }
     };
     invalid = {
       statusCode: 200,
-      body: 'invalid'
+      body: 'invalid',
+      headers: { error: 'invalid' }
     };
     sinon.stub(model, '_request').returns(apiRequest);
     sinon.spy(model, 'parseResponse');
@@ -263,7 +265,7 @@ describe('Model', () => {
     it('calls callback with an error if API response returns an error code', done => {
       model._request.yieldsAsync(null, fail);
       model.save(sandbox(e => {
-        e.should.eql({ status: 500, message: 'error' });
+        e.should.eql({ status: 500, message: 'error', headers: { error: 'fail' } });
       }, done));
     });
 
@@ -298,7 +300,7 @@ describe('Model', () => {
       sinon.stub(model, 'parse');
       model.save(sandbox((err) => {
         model.parse.should.not.have.been.called;
-        err.should.eql({ message: 'error', status: 500 });
+        err.should.eql({ message: 'error', status: 500, headers: { error: 'fail' } });
       }, done));
     });
 
@@ -308,7 +310,7 @@ describe('Model', () => {
       model.save(sandbox(err => {
         model.parseError.should.have.been.calledOnce;
         model.parseError.should.have.been.calledWithExactly(500, { message: 'error' });
-        err.should.eql({ error: 'parsed' });
+        err.should.eql({ error: 'parsed', headers: { error: 'fail' } });
       }, done));
     });
 
@@ -318,6 +320,7 @@ describe('Model', () => {
         err.should.be.an.instanceOf(Error);
         err.status.should.equal(200);
         err.body.should.equal('invalid');
+        err.headers.should.eql({ error: 'invalid' });
         expect(data).not.to.be.ok;
       }, done));
     });
@@ -353,12 +356,13 @@ describe('Model', () => {
     });
 
     it('calls callback with error if parse fails', done => {
+      const err = new Error('parse');
       model.parse = () => {
-        throw new Error('parse');
+        throw err;
       };
       model._request.yieldsAsync(null, success);
-      model.save(sandbox(err => {
-        err.should.eql(new Error('parse'));
+      model.save(sandbox(e => {
+        e.should.equal(err);
       }, done));
     });
 
@@ -432,7 +436,7 @@ describe('Model', () => {
     it('emits a "fail" event on error', done => {
       model._request.yieldsAsync(null, fail);
       model.on('fail', sandbox((err, data, settings, statusCode, responseTime) => {
-        err.should.eql({ message: 'error', status: 500 });
+        err.should.eql({ message: 'error', status: 500, headers: { error: 'fail' } });
         data.should.eql({ message: 'error' });
         settings.method.should.equal('POST');
         statusCode.should.equal(500);
@@ -497,7 +501,7 @@ describe('Model', () => {
     it('rejects with error on failure', () => {
       model._request.yieldsAsync(null, fail);
       return model.save().catch(err => {
-        err.should.eql({ message: 'error', status: 500 });
+        err.should.eql({ message: 'error', status: 500, headers: { error: 'fail' } });
       });
     });
 
@@ -525,7 +529,7 @@ describe('Model', () => {
     it('calls callback with an error if API response returns an error code', done => {
       model._request.yieldsAsync(null, fail);
       model.fetch(sandbox(e => {
-        e.should.eql({ status: 500, message: 'error' });
+        e.should.eql({ status: 500, message: 'error', headers: { error: 'fail' } });
       }, done));
     });
 
@@ -560,7 +564,7 @@ describe('Model', () => {
       sinon.stub(model, 'parse');
       model.fetch(sandbox(err => {
         model.parse.should.not.have.been.called;
-        err.should.eql({ message: 'error', status: 500 });
+        err.should.eql({ message: 'error', status: 500, headers: { error: 'fail' } });
       }, done));
     });
 
@@ -570,6 +574,7 @@ describe('Model', () => {
         err.should.be.an.instanceOf(Error);
         err.status.should.equal(200);
         err.body.should.equal('invalid');
+        err.headers.should.eql({ error: 'invalid' });
         expect(data).to.not.be.ok;
       }, done));
     });
@@ -638,12 +643,13 @@ describe('Model', () => {
     });
 
     it('calls callback with error if parse fails', done => {
+      const err = new Error('parse');
       model.parse = () => {
-        throw new Error('parse');
+        throw err;
       };
       model._request.yieldsAsync(null, success);
-      model.fetch(sandbox(err => {
-        err.should.eql(new Error('parse'));
+      model.fetch(sandbox(e => {
+        e.should.equal(err);
       }, done));
     });
 
@@ -670,7 +676,7 @@ describe('Model', () => {
     it('emits a "fail" event on failure', done => {
       model._request.yieldsAsync(null, fail);
       model.on('fail', (err, data, settings, statusCode, responseTime) => {
-        err.should.eql({ message: 'error', status: 500 });
+        err.should.eql({ message: 'error', status: 500, headers: { error: 'fail' } });
         data.should.eql({ message: 'error' });
         settings.method.should.equal('GET');
         statusCode.should.equal(500);
@@ -749,7 +755,7 @@ describe('Model', () => {
     it('rejects with error on failure', () => {
       model._request.yieldsAsync(null, fail);
       return model.fetch().catch(err => {
-        err.should.eql({ message: 'error', status: 500 });
+        err.should.eql({ message: 'error', status: 500, headers: { error: 'fail' } });
       });
     });
   });
@@ -777,7 +783,7 @@ describe('Model', () => {
     it('calls callback with an error if API response returns an error code', done => {
       model._request.yieldsAsync(null, fail);
       model.delete(sandbox(e => {
-        e.should.eql({ status: 500, message: 'error' });
+        e.should.eql({ status: 500, message: 'error', headers: { error: 'fail' } });
       }, done));
     });
 
@@ -812,7 +818,7 @@ describe('Model', () => {
       sinon.stub(model, 'parse');
       model.delete(sandbox(err => {
         model.parse.should.not.have.been.called;
-        err.should.eql({ message: 'error', status: 500 });
+        err.should.eql({ message: 'error', status: 500, headers: { error: 'fail' } });
       }, done));
     });
 
@@ -822,6 +828,7 @@ describe('Model', () => {
         err.should.be.an.instanceOf(Error);
         err.status.should.equal(200);
         err.body.should.equal('invalid');
+        err.headers.should.eql({ error: 'invalid' });
         expect(data).to.not.be.ok;
       }, done));
     });
@@ -890,12 +897,13 @@ describe('Model', () => {
     });
 
     it('calls callback with error if parse fails', done => {
+      const err = new Error('parse');
       model.parse = () => {
-        throw new Error('parse');
+        throw err;
       };
       model._request.yieldsAsync(null, success);
-      model.delete(sandbox(err => {
-        err.should.eql(new Error('parse'));
+      model.delete(sandbox(e => {
+        e.should.equal(err);
       }, done));
     });
 
@@ -910,7 +918,7 @@ describe('Model', () => {
     it('emits a "fail" event on error', done => {
       model._request.yieldsAsync(null, fail);
       model.on('fail', (err, data, settings, statusCode, responseTime) => {
-        err.should.eql({ message: 'error', status: 500 });
+        err.should.eql({ message: 'error', status: 500, headers: { error: 'fail' } });
         data.should.eql({ message: 'error' });
         settings.method.should.equal('DELETE');
         statusCode.should.equal(500);
@@ -976,7 +984,7 @@ describe('Model', () => {
     it('rejects with error on failure', () => {
       model._request.yieldsAsync(null, fail);
       return model.delete().catch(err => {
-        err.should.eql({ message: 'error', status: 500 });
+        err.should.eql({ message: 'error', status: 500, headers: { error: 'fail' } });
       });
     });
   });
