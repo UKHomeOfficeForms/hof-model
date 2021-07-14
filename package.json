@@ -8,7 +8,9 @@
     "lint": "eslint ./",
     "unit": "mocha test/spec/ --recursive --require test/helper",
     "cover": "istanbul cover _mocha -- test/spec/ --recursive --require test/helper",
-    "check-coverage": "istanbul check-coverage --statement 100 --branch 100 --function 100 --line 100"
+    "check-coverage": "istanbul check-coverage --statement 100 --branch 100 --function 100 --line 100",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -21,8 +23,9 @@
   },
   "homepage": "https://github.com/UKHomeOfficeForms/hof-model",
   "dependencies": {
-    "lodash": "^4.17.2",
-    "request": "^2.81.0"
+    "lodash": "^4.17.21",
+    "request": "^2.88.0",
+    "snyk": "^1.660.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -32,5 +35,6 @@
     "mocha": "^2.1.0",
     "sinon": "^1.12.2",
     "sinon-chai": "^2.6.0"
-  }
+  },
+  "snyk": true
 }
