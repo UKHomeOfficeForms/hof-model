@@ -1,6 +1,7 @@
 # hof-model
 Simple model for interacting with http/rest apis.
 
+
 ## Data Storage
 
 Models can be used as basic data storage with set/get and change events.
