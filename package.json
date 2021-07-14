@@ -4,7 +4,7 @@
   "description": "Simple model for interacting with http/rest apis.",
   "main": "index.js",
   "scripts": {
-    "test": "npm run lint && npm run cover && npm run snyk",
+    "test": "npm run lint && npm run cover",
     "lint": "eslint ./",
     "unit": "mocha test/spec/ --recursive --require test/helper",
     "cover": "istanbul cover _mocha -- test/spec/ --recursive --require test/helper",
