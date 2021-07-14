@@ -15,6 +15,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install
       - run: npm test
+        env:
+          SNYK_TOKEN: ${{ secrets.snyk_bot_token }}
 
   auto-tag-patch:
     needs: test
