@@ -12,7 +12,8 @@
     "lint": "eslint ./",
     "unit": "mocha test/spec/ --recursive --require test/helper",
     "cover": "istanbul cover _mocha -- test/spec/ --recursive --require test/helper",
-    "check-coverage": "istanbul check-coverage --statement 100 --branch 100 --function 100 --line 100"
+    "check-coverage": "istanbul check-coverage --statement 100 --branch 100 --function 100 --line 100",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
